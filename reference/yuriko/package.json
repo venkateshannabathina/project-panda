@@ -1,0 +1,21 @@
+{
+  "name": "yuriko",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "VS Code Extension (TypeScript)   ├─ Manifest (register sidebar panel + commands)   └─ WebView (React/Vite)       ├─ Three.js scene (VRM rendering)       ├─ Chat UI (input + message log)       ├─ Groq API client       ├─ Edge TTS client       └─ Lipsync/Expression engine",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "groq-sdk": "^1.1.2",
+    "node-fetch": "^3.3.2"
+  }
+}

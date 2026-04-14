@@ -1,0 +1,75 @@
+{
+  "name": "buddy",
+  "displayName": "Buddy — Voice Companion",
+  "description": "Voice Companion VS Code Extension",
+  "version": "0.1.0",
+  "publisher": "keyven",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "voice",
+    "ai",
+    "companion",
+    "groq"
+  ],
+  "activationEvents": [
+    "onView:buddy.view",
+    "onCommand:buddy.start"
+  ],
+  "icon": "media/icon.png",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "buddy-sidebar",
+          "title": "Buddy",
+          "icon": "media/buddy-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "buddy-sidebar": [
+        {
+          "type": "webview",
+          "id": "buddy.view",
+          "name": "Buddy"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "buddy.start",
+        "title": "Buddy: Open"
+      }
+    ]
+  },
+  "main": "./out/extension.js",
+  "scripts": {
+    "vscode:prepublish": "npm run bundle && npm run compile",
+    "bundle": "esbuild media/vrm-scene-src.js --bundle --outfile=media/vrm-bundle.js --platform=browser --format=iife",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@pixiv/three-vrm": "^3.5.1",
+    "@pixiv/three-vrm-animation": "^3.5.1",
+    "dotenv": "^16.3.1",
+    "groq-sdk": "^1.1.2",
+    "node-record-lpcm16": "^1.0.1",
+    "three": "^0.183.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^2.3.8",
+    "esbuild": "^0.28.0",
+    "typescript": "^5.0.0"
+  }
+}

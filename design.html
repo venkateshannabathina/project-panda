@@ -1,0 +1,129 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-mono)}
+.screens{display:flex;gap:16px;padding:1rem 0;flex-wrap:wrap}
+.screen{background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);width:180px;flex-shrink:0;overflow:hidden}
+.screen-label{font-size:10px;color:var(--color-text-tertiary);padding:8px 10px 4px;letter-spacing:0.05em;font-family:var(--font-sans)}
+.vsc-bar{background:var(--color-background-secondary);height:24px;display:flex;align-items:center;padding:0 8px;gap:6px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.vsc-dot{width:7px;height:7px;border-radius:50%;background:var(--color-border-secondary)}
+.vsc-title{font-size:9px;color:var(--color-text-tertiary);font-family:var(--font-sans)}
+.panel{padding:16px 14px;display:flex;flex-direction:column;gap:10px;min-height:200px;align-items:center;justify-content:center}
+.logo{font-size:12px;font-weight:500;color:var(--color-text-primary);text-align:center;font-family:var(--font-sans);letter-spacing:-0.02em}
+.sub{font-size:9px;color:var(--color-text-tertiary);text-align:center;font-family:var(--font-sans);letter-spacing:0.08em;text-transform:uppercase}
+.btn{background:var(--color-text-primary);color:var(--color-background-primary);border:none;border-radius:4px;padding:5px 14px;font-size:9px;font-family:var(--font-sans);cursor:pointer;letter-spacing:0.04em}
+.input-field{width:100%;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:4px;padding:5px 8px;font-size:9px;font-family:var(--font-mono);color:var(--color-text-secondary)}
+.input-label{font-size:9px;color:var(--color-text-secondary);font-family:var(--font-sans);width:100%}
+.lock-icon{font-size:16px;color:var(--color-text-tertiary)}
+.saved-badge{font-size:8px;background:var(--color-background-success);color:var(--color-text-success);padding:2px 6px;border-radius:3px;font-family:var(--font-sans)}
+.word-box{width:100%;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:4px;padding:10px 10px;min-height:44px;display:flex;align-items:center;justify-content:center}
+.word{font-size:14px;font-weight:500;color:var(--color-text-primary);font-family:var(--font-mono);letter-spacing:-0.02em}
+.word.muted{color:var(--color-text-tertiary);font-size:10px}
+.pulse{display:inline-block;width:6px;height:6px;border-radius:50%;background:#E24B4A;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.status{font-size:8px;color:var(--color-text-tertiary);font-family:var(--font-sans);text-align:center}
+.buf-box{width:100%;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:4px;padding:10px;min-height:44px;display:flex;align-items:center;justify-content:center;gap:4px}
+.buf-bar{width:3px;background:var(--color-border-secondary);border-radius:2px;animation:wave 0.8s ease-in-out infinite}
+.buf-bar:nth-child(1){height:8px;animation-delay:0s}
+.buf-bar:nth-child(2){height:16px;animation-delay:0.1s}
+.buf-bar:nth-child(3){height:10px;animation-delay:0.2s}
+.buf-bar:nth-child(4){height:20px;animation-delay:0.3s}
+.buf-bar:nth-child(5){height:12px;animation-delay:0.15s}
+@keyframes wave{0%,100%{transform:scaleY(0.5)}50%{transform:scaleY(1)}}
+.arrow{font-size:14px;color:var(--color-text-tertiary);align-self:center;padding-top:30px}
+.screen-tag{font-size:8px;font-family:var(--font-sans);color:var(--color-text-tertiary);background:var(--color-background-secondary);border-radius:3px;padding:1px 5px;margin-left:auto}
+.vrm-area{width:100%;height:60px;background:var(--color-background-secondary);border:0.5px dashed var(--color-border-tertiary);border-radius:4px;display:flex;align-items:center;justify-content:center}
+.vrm-txt{font-size:8px;color:var(--color-text-tertiary);font-family:var(--font-sans)}
+.output-word{font-size:13px;font-weight:500;color:#185FA5;font-family:var(--font-mono)}
+</style>
+
+<div style="font-size:11px;color:var(--color-text-secondary);font-family:var(--font-sans);padding:0 0 8px;">webview panel flow — activity bar → panel opens</div>
+
+<div class="screens">
+
+  <div style="display:flex;flex-direction:column;align-items:center">
+    <div class="screen-label">① start</div>
+    <div class="screen">
+      <div class="vsc-bar"><div class="vsc-dot"></div><div class="vsc-dot"></div><div class="vsc-dot"></div><span class="vsc-title">Yuriko</span></div>
+      <div class="panel">
+        <div class="logo">keyven's lab</div>
+        <div class="sub">yuriko</div>
+        <div style="height:8px"></div>
+        <button class="btn">start</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <div style="display:flex;flex-direction:column;align-items:center">
+    <div class="screen-label">② api key</div>
+    <div class="screen">
+      <div class="vsc-bar"><div class="vsc-dot"></div><div class="vsc-dot"></div><div class="vsc-dot"></div><span class="vsc-title">Yuriko</span></div>
+      <div class="panel">
+        <span class="lock-icon">&#128274;</span>
+        <div class="input-label">groq api key</div>
+        <input class="input-field" type="password" placeholder="gsk_••••••••••••" readonly />
+        <div style="font-size:8px;color:var(--color-text-tertiary);font-family:var(--font-sans);text-align:center">stored in vscode SecretStorage<br/>never leaves your machine</div>
+        <button class="btn">confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <div style="display:flex;flex-direction:column;align-items:center">
+    <div class="screen-label">③ listening</div>
+    <div class="screen">
+      <div class="vsc-bar"><div class="vsc-dot"></div><div class="vsc-dot"></div><div class="vsc-dot"></div><span class="vsc-title">Yuriko</span></div>
+      <div class="panel">
+        <div class="vrm-area"><span class="vrm-txt">vrm — phase 2</span></div>
+        <div style="height:4px"></div>
+        <div style="display:flex;align-items:center;gap:6px;align-self:flex-start">
+          <span class="pulse"></span>
+          <span class="status">listening</span>
+        </div>
+        <div class="word-box">
+          <span class="word">building</span>
+        </div>
+        <div style="font-size:8px;color:var(--color-text-tertiary);font-family:var(--font-sans)">words stream left → right</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <div style="display:flex;flex-direction:column;align-items:center">
+    <div class="screen-label">④ processing</div>
+    <div class="screen">
+      <div class="vsc-bar"><div class="vsc-dot"></div><div class="vsc-dot"></div><div class="vsc-dot"></div><span class="vsc-title">Yuriko</span></div>
+      <div class="panel">
+        <div class="vrm-area"><span class="vrm-txt">vrm — phase 2</span></div>
+        <div style="height:4px"></div>
+        <div class="status">thinking</div>
+        <div class="buf-box">
+          <div class="buf-bar"></div><div class="buf-bar"></div><div class="buf-bar"></div><div class="buf-bar"></div><div class="buf-bar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <div style="display:flex;flex-direction:column;align-items:center">
+    <div class="screen-label">⑤ output</div>
+    <div class="screen">
+      <div class="vsc-bar"><div class="vsc-dot"></div><div class="vsc-dot"></div><div class="vsc-dot"></div><span class="vsc-title">Yuriko</span></div>
+      <div class="panel">
+        <div class="vrm-area"><span class="vrm-txt">vrm — phase 2</span></div>
+        <div style="height:4px"></div>
+        <div class="status">yuriko speaking</div>
+        <div class="word-box">
+          <span class="output-word">absolutely</span>
+        </div>
+        <div style="font-size:8px;color:var(--color-text-tertiary);font-family:var(--font-sans)">tts + word sync</div>
+      </div>
+    </div>
+  </div>
+
+</div>
