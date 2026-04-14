@@ -1,18 +1,18 @@
 import * as vscode from 'vscode';
-import { BuddyPanel } from './panel';
+import { PandaPanel } from './panel';
 
 export function activate(context: vscode.ExtensionContext) {
-  const provider = new BuddyPanel(context);
+  const provider = new PandaPanel(context);
 
   context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider(BuddyPanel.viewType, provider, {
+    vscode.window.registerWebviewViewProvider(PandaPanel.viewType, provider, {
       webviewOptions: { retainContextWhenHidden: true }
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('buddy.start', () => {
-      vscode.commands.executeCommand('buddy.view.focus');
+    vscode.commands.registerCommand('panda.start', () => {
+      vscode.commands.executeCommand('panda.view.focus');
     })
   );
 }

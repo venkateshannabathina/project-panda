@@ -199,9 +199,9 @@ const GAZE = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BuddyVRM — main object
+// YurikoVRM — main object
 // ─────────────────────────────────────────────────────────────────────────────
-const BuddyVRM = {
+const YurikoVRM = {
   scene:    null,
   camera:   null,
   renderer: null,
@@ -719,4 +719,4 @@ const BuddyVRM = {
   },
 };
 
-window.BuddyVRM = BuddyVRM;
+window.YurikoVRM = YurikoVRM;

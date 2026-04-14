@@ -22,7 +22,7 @@ function renderStartScreen() {
           </svg>
         </div>
       </div>
-      <div class="start-title">buddy</div>
+      <div class="start-title">yuriko</div>
       <div class="start-sub">voice ai · groq powered</div>
       <div style="height:8px"></div>
       <button class="btn" id="start-btn">get started</button>
@@ -183,20 +183,20 @@ function initVRM() {
   canvas.width  = viewport.clientWidth  || 300;
   canvas.height = viewport.clientHeight || 480;
 
-  if (window.BuddyVRM) {
-    window.BuddyVRM.init(canvas);
+  if (window.YurikoVRM) {
+    window.YurikoVRM.init(canvas);
   }
 
   vscode.postMessage({ type: 'REQUEST_VRM' });
 }
 
 async function loadVRM(vrmUri, vrmaUri) {
-  if (!window.BuddyVRM) return;
+  if (!window.YurikoVRM) return;
   const loadingEl = document.getElementById('vrm-loading');
   try {
-    await window.BuddyVRM.load(vrmUri);
+    await window.YurikoVRM.load(vrmUri);
     if (loadingEl) loadingEl.style.display = 'none';
-    if (vrmaUri) await window.BuddyVRM.loadAnimation(vrmaUri);
+    if (vrmaUri) await window.YurikoVRM.loadAnimation(vrmaUri);
   } catch (err) {
     console.error('VRM load failed:', err);
     if (loadingEl) {
@@ -237,7 +237,7 @@ function setUIState(state) {
     }[state] ?? 'Ask anything…';
   }
 
-  if (window.BuddyVRM) window.BuddyVRM.setExpression(state);
+  if (window.YurikoVRM) window.YurikoVRM.setExpression(state);
 }
 
 // ── TOAST MESSAGES ────────────────────────────────────────
@@ -281,7 +281,7 @@ window.addEventListener('message', async (e) => {
 
     case 'SET_STATE':
       setUIState(msg.state);
-      if (msg.state === 'idle' && window.BuddyVRM) window.BuddyVRM.setSentiment(null);
+      if (msg.state === 'idle' && window.YurikoVRM) window.YurikoVRM.setSentiment(null);
       break;
 
     case 'LOAD_VRM':
@@ -299,13 +299,13 @@ window.addEventListener('message', async (e) => {
     case 'LLM_DONE':
       break;
 
-    case 'BUDDY_SAID':
-      showToast('buddy', msg.text);
-      if (window.BuddyVRM) {
+    case 'YURIKO_SAID':
+      showToast('yuriko', msg.text);
+      if (window.YurikoVRM) {
         // Use the emotion tag the LLM embedded in its reply.
         // Fall back to keyword analysis if the model didn't include a tag.
         const emotion = msg.emotion || analyzeSentiment(msg.text);
-        window.BuddyVRM.setSentiment(emotion);
+        window.YurikoVRM.setSentiment(emotion);
       }
       break;
 
@@ -355,13 +355,13 @@ async function playAudio(base64Data) {
         sum += v * v;
       }
       const rms = Math.sqrt(sum / data.length);
-      if (window.BuddyVRM) window.BuddyVRM.setLipSync(rms);
+      if (window.YurikoVRM) window.YurikoVRM.setLipSync(rms);
       if (isPlaying) requestAnimationFrame(tick);
     }
 
     source.onended = () => {
       isPlaying = false;
-      if (window.BuddyVRM) window.BuddyVRM.setLipSync(0);
+      if (window.YurikoVRM) window.YurikoVRM.setLipSync(0);
       vscode.postMessage({ type: 'TTS_DONE' });
     };
 
@@ -375,7 +375,7 @@ async function playAudio(base64Data) {
 }
 
 // ── SENTIMENT ANALYSIS ───────────────────────────────────
-// Keyword pass over buddy's reply text.
+// Keyword pass over Yuriko's reply text.
 // Returns an emotion NAME that maps to EMOTION_PROFILES in vrm-scene-src.js.
 //
 // Priority (highest → lowest): angry > suspicious > sad/apologetic >

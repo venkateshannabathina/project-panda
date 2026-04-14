@@ -13,7 +13,7 @@ export class AudioCapture {
       process.env.PATH = `${process.env.PATH || ''}:/opt/homebrew/bin:/usr/local/bin`;
     }
 
-    this.outputPath = path.join(os.tmpdir(), `buddy_${Date.now()}.wav`);
+    this.outputPath = path.join(os.tmpdir(), `panda_${Date.now()}.wav`);
     
     const recordOptions: any = {
       sampleRate: 16000,

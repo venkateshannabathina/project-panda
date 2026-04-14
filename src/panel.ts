@@ -17,8 +17,8 @@ function getNonce() {
   return text;
 }
 
-export class BuddyPanel implements vscode.WebviewViewProvider {
-  public static readonly viewType = 'buddy.view';
+export class PandaPanel implements vscode.WebviewViewProvider {
+  public static readonly viewType = 'panda.view';
 
   private _view?: vscode.WebviewView;
   private secretManager: SecretManager;
@@ -227,9 +227,9 @@ export class BuddyPanel implements vscode.WebviewViewProvider {
         return;
       }
 
-      // Send full buddy reply to display in chat (clean text + detected emotion)
+      // Send full Yuriko reply to display in chat (clean text + detected emotion)
       const emotion = this.groqClient.getLastEmotion();
-      this.postMessage({ type: 'BUDDY_SAID', text: fullText, emotion });
+      this.postMessage({ type: 'YURIKO_SAID', text: fullText, emotion });
 
       const audioBuffer = await this.groqClient.synthesizeSpeech(fullText);
       const audioBase64 = audioBuffer.toString('base64');

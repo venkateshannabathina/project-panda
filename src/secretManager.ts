@@ -4,14 +4,14 @@ export class SecretManager {
   constructor(private secrets: vscode.SecretStorage) {}
 
   async saveGroqKey(key: string): Promise<void> {
-    await this.secrets.store('buddy.groqKey', key);
+    await this.secrets.store('panda.groqKey', key);
   }
 
   async getGroqKey(): Promise<string | undefined> {
-    return this.secrets.get('buddy.groqKey');
+    return this.secrets.get('panda.groqKey');
   }
 
   async clearGroqKey(): Promise<void> {
-    await this.secrets.delete('buddy.groqKey');
+    await this.secrets.delete('panda.groqKey');
   }
 }

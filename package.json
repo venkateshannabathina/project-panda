@@ -1,6 +1,6 @@
 {
-  "name": "buddy",
-  "displayName": "Buddy — Voice Companion",
+  "name": "panda",
+  "displayName": "Panda — Voice Companion",
   "description": "Voice Companion VS Code Extension",
   "version": "0.1.0",
   "publisher": "keyven",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/venkateshannabathina/project-panda.git"
   },
   "keywords": [
     "voice",
@@ -18,33 +18,33 @@
     "groq"
   ],
   "activationEvents": [
-    "onView:buddy.view",
-    "onCommand:buddy.start"
+    "onView:panda.view",
+    "onCommand:panda.start"
   ],
   "icon": "media/icon.png",
   "contributes": {
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "buddy-sidebar",
-          "title": "Buddy",
-          "icon": "media/buddy-icon.svg"
+          "id": "panda-sidebar",
+          "title": "Panda",
+          "icon": "media/panda-icon.svg"
         }
       ]
     },
     "views": {
-      "buddy-sidebar": [
+      "panda-sidebar": [
         {
           "type": "webview",
-          "id": "buddy.view",
-          "name": "Buddy"
+          "id": "panda.view",
+          "name": "Panda"
         }
       ]
     },
     "commands": [
       {
-        "command": "buddy.start",
-        "title": "Buddy: Open"
+        "command": "panda.start",
+        "title": "Panda: Open"
       }
     ]
   },
