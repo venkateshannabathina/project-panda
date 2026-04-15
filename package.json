@@ -21,7 +21,6 @@
     "onView:panda.view",
     "onCommand:panda.start"
   ],
-  "icon": "media/icon.png",
   "contributes": {
     "viewsContainers": {
       "activitybar": [

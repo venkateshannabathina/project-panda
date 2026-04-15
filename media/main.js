@@ -40,6 +40,7 @@ let queuedScreen   = null;         // SHOW_SCREEN received before shell was read
 let settingsOpen   = false;
 let isBusy         = false;        // mirrors host isBusy
 let currentUIState = 'idle';
+let vrmAnimations  = {};           // all animation URLs keyed by name (from LOAD_VRM)
 
 // ─── MEMORY ───────────────────────────────────────────────────────────────────
 function memGet()           { try { return JSON.parse(localStorage.getItem('panda_memory') || '[]'); } catch { return []; } }
@@ -654,8 +655,9 @@ function initVRM() {
   vscode.postMessage({ type: 'REQUEST_VRM', companion: prefs.companion });
 }
 
-async function loadVRM(vrmUri, vrmaUri) {
+async function loadVRM(vrmUri, vrmaUri, animations) {
   if (!window.YurikoVRM) return;
+  if (animations) vrmAnimations = animations;
   const loadingEl = document.getElementById('vrm-loading');
   try {
     await window.YurikoVRM.load(vrmUri);
@@ -788,7 +790,7 @@ window.addEventListener('message', async (e) => {
       break;
 
     case 'LOAD_VRM':
-      await loadVRM(msg.vrmUri, msg.vrmaUri);
+      await loadVRM(msg.vrmUri, msg.vrmaUri, msg.animations);
       break;
 
     case 'USER_SAID':

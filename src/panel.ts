@@ -144,15 +144,23 @@ export class PandaPanel implements vscode.WebviewViewProvider {
   }
 
   private sendVrmUri(companion?: string): void {
-    if (!this._view) return;
-    const modelFile = companion === 'male' ? 'male.vrm' : 'female.vrm';
-    const vrmUri = this._view.webview.asWebviewUri(
-      vscode.Uri.joinPath(this._context.extensionUri, 'modelfiles', modelFile)
-    );
-    const vrmaUri = this._view.webview.asWebviewUri(
-      vscode.Uri.joinPath(this._context.extensionUri, 'modelfiles', 'VRMA_MotionPack', 'vrma', 'showfullbody.vrma')
-    );
-    this.postMessage({ type: 'LOAD_VRM', vrmUri: vrmUri.toString(), vrmaUri: vrmaUri.toString() });
+    const ASSETS_BASE = 'https://huggingface.co/datasets/venkateshannabathina/panda-assets/resolve/main';
+
+    const vrmUri = companion === 'male'
+      ? `${ASSETS_BASE}/male.vrm`
+      : `${ASSETS_BASE}/female.vrm`;
+
+    const animations = {
+      intro:     `${ASSETS_BASE}/showfullbody.vrma`,
+      greeting:  `${ASSETS_BASE}/greeting.vrma`,
+      spin:      `${ASSETS_BASE}/spin.vrma`,
+      peacesign: `${ASSETS_BASE}/peacesign.vrma`,
+      shoot:     `${ASSETS_BASE}/shoot.vrma`,
+      vrma06:    `${ASSETS_BASE}/VRMA_06.vrma`,
+      vrma07:    `${ASSETS_BASE}/VRMA_07.vrma`,
+    };
+
+    this.postMessage({ type: 'LOAD_VRM', vrmUri, vrmaUri: animations.intro, animations });
   }
 
   private async processAudio(wavPath: string): Promise<void> {
