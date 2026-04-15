@@ -1,5 +1,8 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import * as path from 'path';
+import * as https from 'https';
+import * as http from 'http';
 import { SecretManager } from './secretManager';
 import { GroqClient } from './groqClient';
 import { AudioCapture } from './audioCapture';
@@ -38,12 +41,15 @@ export class PandaPanel implements vscode.WebviewViewProvider {
   ): void {
     this._view = webviewView;
 
+    // Ensure the asset cache directory exists
+    fs.mkdirSync(this._context.globalStorageUri.fsPath, { recursive: true });
+
     webviewView.webview.options = {
       enableScripts: true,
       localResourceRoots: [
         vscode.Uri.joinPath(this._context.extensionUri, 'media'),
         vscode.Uri.joinPath(this._context.extensionUri, 'webview'),
-        vscode.Uri.joinPath(this._context.extensionUri, 'modelfiles'),
+        this._context.globalStorageUri,
       ]
     };
 
@@ -90,7 +96,7 @@ export class PandaPanel implements vscode.WebviewViewProvider {
           break;
 
         case 'REQUEST_VRM':
-          this.sendVrmUri(msg.companion);
+          await this.sendVrmUri(msg.companion);
           break;
 
         case 'CLEAR_API_KEY':
@@ -143,24 +149,76 @@ export class PandaPanel implements vscode.WebviewViewProvider {
     }
   }
 
-  private sendVrmUri(companion?: string): void {
-    const ASSETS_BASE = 'https://huggingface.co/datasets/venkateshannabathina/panda-assets/resolve/main';
+  // Download a single file from a URL (follows redirects) to a local path.
+  private downloadFile(url: string, destPath: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const follow = (location: string) => {
+        const mod = location.startsWith('https') ? https : http;
+        mod.get(location, (res) => {
+          if (res.statusCode && res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+            res.resume();
+            follow(res.headers.location);
+            return;
+          }
+          if (res.statusCode !== 200) {
+            res.resume();
+            reject(new Error(`HTTP ${res.statusCode} downloading ${location}`));
+            return;
+          }
+          const out = fs.createWriteStream(destPath);
+          res.pipe(out);
+          out.on('finish', () => { out.close(); resolve(); });
+          out.on('error', (err) => { try { fs.unlinkSync(destPath); } catch {} reject(err); });
+          res.on('error', (err) => { try { fs.unlinkSync(destPath); } catch {} reject(err); });
+        }).on('error', reject);
+      };
+      follow(url);
+    });
+  }
 
-    const vrmUri = companion === 'male'
-      ? `${ASSETS_BASE}/male.vrm`
-      : `${ASSETS_BASE}/female.vrm`;
+  // Downloads all VRM/VRMA assets from HuggingFace into globalStorageUri (cached).
+  // On repeat launches the cached files are served directly — no re-download.
+  private async sendVrmUri(companion?: string): Promise<void> {
+    if (!this._view) return;
+
+    const ASSETS_BASE = 'https://huggingface.co/datasets/venkateshannabathina/panda-assets/resolve/main';
+    const cacheDir = this._context.globalStorageUri.fsPath;
+
+    const vrmName   = companion === 'male' ? 'male.vrm' : 'female.vrm';
+    const animNames = [
+      'showfullbody.vrma',
+      'greeting.vrma',
+      'spin.vrma',
+      'peacesign.vrma',
+      'shoot.vrma',
+      'VRMA_06.vrma',
+      'VRMA_07.vrma',
+    ];
+
+    // Download any assets that aren't already cached
+    for (const name of [vrmName, ...animNames]) {
+      const dest = path.join(cacheDir, name);
+      if (!fs.existsSync(dest)) {
+        await this.downloadFile(`${ASSETS_BASE}/${name}`, dest);
+      }
+    }
+
+    const toUri = (name: string) =>
+      this._view!.webview.asWebviewUri(
+        vscode.Uri.joinPath(this._context.globalStorageUri, name)
+      ).toString();
 
     const animations = {
-      intro:     `${ASSETS_BASE}/showfullbody.vrma`,
-      greeting:  `${ASSETS_BASE}/greeting.vrma`,
-      spin:      `${ASSETS_BASE}/spin.vrma`,
-      peacesign: `${ASSETS_BASE}/peacesign.vrma`,
-      shoot:     `${ASSETS_BASE}/shoot.vrma`,
-      vrma06:    `${ASSETS_BASE}/VRMA_06.vrma`,
-      vrma07:    `${ASSETS_BASE}/VRMA_07.vrma`,
+      intro:     toUri('showfullbody.vrma'),
+      greeting:  toUri('greeting.vrma'),
+      spin:      toUri('spin.vrma'),
+      peacesign: toUri('peacesign.vrma'),
+      shoot:     toUri('shoot.vrma'),
+      vrma06:    toUri('VRMA_06.vrma'),
+      vrma07:    toUri('VRMA_07.vrma'),
     };
 
-    this.postMessage({ type: 'LOAD_VRM', vrmUri, vrmaUri: animations.intro, animations });
+    this.postMessage({ type: 'LOAD_VRM', vrmUri: toUri(vrmName), vrmaUri: animations.intro, animations });
   }
 
   private async processAudio(wavPath: string): Promise<void> {
