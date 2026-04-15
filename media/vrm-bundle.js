@@ -43189,7 +43189,7 @@ void main() {
     ),
     error: () => new Vector3(-0.1, 1.18, 2.5)
   };
-  var BuddyVRM = {
+  var YurikoVRM = {
     scene: null,
     camera: null,
     renderer: null,
@@ -43668,7 +43668,7 @@ void main() {
       this._lipRaw = clamp2(amplitude * 3.2, 0, 1);
     }
   };
-  window.BuddyVRM = BuddyVRM;
+  window.YurikoVRM = YurikoVRM;
 })();
 /*! Bundled license information:
 

@@ -52,8 +52,6 @@ export class PandaPanel implements vscode.WebviewViewProvider {
     webviewView.webview.onDidReceiveMessage(
       async (msg) => this.handleMessage(msg)
     );
-
-    this.checkInitialKey();
   }
 
   private postMessage(msg: any): void {
@@ -66,6 +64,8 @@ export class PandaPanel implements vscode.WebviewViewProvider {
       if (key) {
         await this.showLoadingScreen();
         await this.initializeClient(key);
+      } else {
+        this.postMessage({ type: 'SHOW_SCREEN', screen: 'API_KEY' });
       }
     } catch (e: any) {
       this.postMessage({ type: 'SHOW_ERROR', message: e.message || 'Initialization error' });
@@ -85,8 +85,19 @@ export class PandaPanel implements vscode.WebviewViewProvider {
           await this.initializeClient(msg.key);
           break;
 
+        case 'WEBVIEW_READY':
+          await this.checkInitialKey();
+          break;
+
         case 'REQUEST_VRM':
-          this.sendVrmUri();
+          this.sendVrmUri(msg.companion);
+          break;
+
+        case 'CLEAR_API_KEY':
+          await this.secretManager.clearGroqKey();
+          this.groqClient = null;
+          this.isBusy = false;
+          this.postMessage({ type: 'SHOW_SCREEN', screen: 'API_KEY' });
           break;
 
         case 'SEND_TEXT': {
@@ -132,10 +143,11 @@ export class PandaPanel implements vscode.WebviewViewProvider {
     }
   }
 
-  private sendVrmUri(): void {
+  private sendVrmUri(companion?: string): void {
     if (!this._view) return;
+    const modelFile = companion === 'male' ? 'male.vrm' : 'female.vrm';
     const vrmUri = this._view.webview.asWebviewUri(
-      vscode.Uri.joinPath(this._context.extensionUri, 'modelfiles', 'female.vrm')
+      vscode.Uri.joinPath(this._context.extensionUri, 'modelfiles', modelFile)
     );
     const vrmaUri = this._view.webview.asWebviewUri(
       vscode.Uri.joinPath(this._context.extensionUri, 'modelfiles', 'VRMA_MotionPack', 'vrma', 'showfullbody.vrma')
